@@ -1,0 +1,58 @@
+{
+    "name":"my_starjob",
+    "headless": true,
+    "base_url":"http://mystarjob.com",
+    "search" : {
+        "url" : "/search/default.aspx?a=&i=-1&sb=-1&stb=1&std=2&f=-1&c=-1&s=-1&jt=-1&jl=-1&fw=&jf=&jb=&rs=-1",
+        "pagination" : {
+            "type": "query",
+            "attrs": {
+                "param": "&p=",
+                "initial": 1,
+                "incremental": 1,
+                "limit": 10
+            }
+        }
+        
+    },
+    "crawl": {
+        "selectors":[
+            {
+                "field_name": "result",
+                "query" : "div[class=\"resultDisplay\"] > p",
+                "method" : ".text()",
+                "regex" : "(?<=\\bof )\\d+"
+            }, 
+            {
+                "field_name": "content_url",
+                "query": "h2[class=\"titleL\"] > a",
+                "method": ".map((i,e)=> $(e).attr(\"href\")).get()"
+            }
+        ]
+    },
+    "scrape" : {
+        "selectors": [
+            {
+                "field_name" : "job_title",
+                "query": "h1[class=\"jobsTitle\"]",
+                "method" : ".text()"
+            },
+            {
+                "field_name" : "company",
+                "query": "h2[class=\"company\"]",
+                "method" : ".text().trim()"
+            },
+            {
+                "field_name" : "date_posted",
+                "query": "p[class=\"date\"]",
+                "method" : ".text()",
+                "regex" : "(?<=^Posted\\son\\s)\\d.+$"
+            },
+            {
+                "field_name" : "job_description",
+                "query": "div[class=\"jobsDesc\"]",
+                "method" : ".toString()"  
+            }
+        ]
+    }
+}
